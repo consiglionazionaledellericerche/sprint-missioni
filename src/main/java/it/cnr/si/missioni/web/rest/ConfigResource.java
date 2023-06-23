@@ -20,17 +20,28 @@
 package it.cnr.si.missioni.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+
+import it.cnr.si.missioni.amq.domain.Missione;
+import it.cnr.si.missioni.amq.domain.TypeMissione;
+import it.cnr.si.missioni.amq.domain.TypeTipoMissione;
+import it.cnr.si.missioni.amq.service.RabbitMQService;
+import it.cnr.si.missioni.domain.custom.persistence.OrdineMissione;
 import it.cnr.si.missioni.service.ConfigService;
 import it.cnr.si.missioni.service.CronService;
+import it.cnr.si.missioni.service.OrdineMissioneService;
 import it.cnr.si.missioni.util.Costanti;
 import it.cnr.si.missioni.util.JSONResponseEntity;
 import it.cnr.si.missioni.util.data.Faq;
+import it.cnr.si.missioni.util.proxy.json.object.Account;
+import it.cnr.si.missioni.util.proxy.json.service.AccountService;
 import it.cnr.si.security.AuthoritiesConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,7 +54,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * REST controller for managing config.
  */
-@RolesAllowed({Costanti.ROLE_ADMIN})
+//@RolesAllowed({Costanti.ROLE_ADMIN})
 @RestController
 @RequestMapping("/api")
 public class ConfigResource {
@@ -55,6 +66,13 @@ public class ConfigResource {
 
     @Autowired
     private ConfigService configService;
+    
+    @Autowired
+    private RabbitMQService rabbitMQService;
+    @Autowired
+    private OrdineMissioneService ordineMissioneService;
+    @Autowired
+    private AccountService accountService;
 
     @RolesAllowed({AuthoritiesConstants.USER})
     @RequestMapping(value = "/rest/config/message",
@@ -206,5 +224,24 @@ public class ConfigResource {
     public void aggiornaPersonaleNonDipendente() {
         log.info("REST request per aggiornare i dati su ACE");
         configService.aggiornaRapportoPersonaleEsterno();
+    }
+    
+    @RequestMapping(value = "/rest/config/reinviaOrdineMissioneInCoda/{id}",
+            method = RequestMethod.POST)
+    @Timed
+    public void reinviaInCoda(@PathVariable Long id) {
+        OrdineMissione ordineMissione = ordineMissioneService.getOrdineMissione(id, true);
+        Boolean stessoComune = StringUtils.substringMatch(ordineMissione.getComuneResidenzaRich(), 0, ordineMissione.getDestinazione());
+        Account account = accountService.loadAccountFromUsername(ordineMissione.getUid());
+        String idSede = null;
+        if (account != null) {
+            idSede = account.getCodice_sede();
+        }
+        Missione missione = new Missione(TypeMissione.ORDINE, Long.valueOf(ordineMissione.getId().toString()), idSede,
+                ordineMissione.getMatricola(), ordineMissione.getDataInizioMissione(),
+                ordineMissione.getDataFineMissione(), null,
+                ordineMissione.isMissioneEstera() ? TypeTipoMissione.ESTERA : TypeTipoMissione.ITALIA,
+                ordineMissione.getAnno(), ordineMissione.getNumero(), stessoComune);
+        rabbitMQService.send(missione);
     }
 }

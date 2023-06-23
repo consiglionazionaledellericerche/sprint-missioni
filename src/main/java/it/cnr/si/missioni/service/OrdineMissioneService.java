@@ -485,11 +485,13 @@ public class OrdineMissioneService {
             if (account != null) {
                 idSede = account.getCodice_sede();
             }
+            Boolean stessoComune = StringUtils.substringMatch(ordineMissione.getComuneResidenzaRich(), 0, ordineMissione.getDestinazione());
+
             Missione missione = new Missione(TypeMissione.ORDINE, Long.valueOf(ordineMissione.getId().toString()), idSede,
                     ordineMissione.getMatricola(), ordineMissione.getDataInizioMissione(),
                     ordineMissione.getDataFineMissione(), null,
                     ordineMissione.isMissioneEstera() ? TypeTipoMissione.ESTERA : TypeTipoMissione.ITALIA,
-                    ordineMissione.getAnno(), ordineMissione.getNumero());
+                    ordineMissione.getAnno(), ordineMissione.getNumero(), stessoComune);
             rabbitMQService.send(missione);
         }
     }

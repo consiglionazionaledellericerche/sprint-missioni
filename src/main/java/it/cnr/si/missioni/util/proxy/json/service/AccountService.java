@@ -231,9 +231,11 @@ public class AccountService {
     private Account getAccountFromUserKeycloak(Boolean loadSpecialUserData, UserInfoDto userInfoDto) {
         Account account = new Account(userInfoDto);
         if (loadSpecialUserData) {
-            Optional<CNRUser> user = securityService.getUser();
+            Optional<UserInfoDto> user = securityService.getUserInfo();
             user.ifPresent(utente -> {
-                final List<String> roles = utente.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.toList());
+                final List<String> roles = utente.getRoles().stream()
+                        .map(r -> r.getSiglaRuolo())
+                        .collect(Collectors.toList());
                 roles.add(AuthoritiesConstants.USER);
                 account.setInternalRoles(roles);
             });

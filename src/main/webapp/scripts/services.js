@@ -288,7 +288,7 @@ missioniApp.factory('AuthenticationSharedService', function (ProxyService, $root
                     var terzoPerCompenso = terziPerCompenso[0];
                     return terzoPerCompenso;
                 } else {
-                    ui.error("Errore recupero dati per il codice fiscale "+ data.codice_fiscale);
+                    ui.error("Errore recupero dati per il codice fiscale "+ data.codice_fiscale+", controllare il rapporto e l'inquadramento in SIGLA!");
                 }
                 return null;
             });

@@ -145,7 +145,7 @@ missioniApp.factory('ProxyService', function($http, COSTANTI, APP_FOR_REST, SIGL
                             persona.comune_residenza = terzoPerCompenso.ds_comune_fiscale;
                         }
                     } else {
-                        ui.error("Errore recupero dati per il codice fiscale "+ persona.codice_fiscale);
+                        ui.error("Errore recupero dati per il codice fiscale "+ persona.codice_fiscale+", controllare il rapporto e l'inquadramento in SIGLA!");
                     }
                     return createPerson(persona);
                 });

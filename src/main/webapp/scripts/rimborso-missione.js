@@ -148,7 +148,7 @@ missioniApp.controller('RimborsoMissioneController', function ($rootScope, $scop
                     $scope.recuperoDatiInquadramento(userWork, $scope.terzoSigla);
                     $scope.recuperoDatiModalitaPagamento(userWork, $scope.terzoSigla);
                 } else {
-                    ui.error("Errore recupero dati per il codice fiscale "+ userWork.codice_fiscale);
+                    ui.error("Errore recupero dati per il codice fiscale "+ userWork.codice_fiscale+", controllare il rapporto e l'inquadramento in SIGLA!");
                 }
             });
         } else {

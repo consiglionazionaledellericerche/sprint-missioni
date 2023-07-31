@@ -39,9 +39,8 @@ public class Missione {
     private final Long id_ordine;
     private final Integer anno;
     private final Long numero;
-    private final Boolean destinazione_nel_comunediresidenza;
 
-    public Missione(TypeMissione tipoMissione, Long id, String codiceSede, String matricola, ZonedDateTime data_inizio, ZonedDateTime data_fine, Long idOrdine, TypeTipoMissione dest_missione, Integer anno, Long numero, Boolean destinazione_nel_comunediresidenza) {
+    public Missione(TypeMissione tipoMissione, Long id, String codiceSede, String matricola, ZonedDateTime data_inizio, ZonedDateTime data_fine, Long idOrdine, TypeTipoMissione dest_missione, Integer anno, Long numero) {
         this.codice_sede = codiceSede;
         this.tipo_missione = tipoMissione;
         this.matricola = matricola;
@@ -52,7 +51,6 @@ public class Missione {
         this.dest_missione = dest_missione;
         this.anno = anno;
         this.numero = numero;
-        this.destinazione_nel_comunediresidenza = destinazione_nel_comunediresidenza;
     }
 
     public String getMatricola() {
@@ -94,13 +92,6 @@ public class Missione {
         return numero;
     }
 
-    public TypeTipoMissione getDest_missione() {
-        return dest_missione;
-    }
-
-    public Boolean getDestinazione_nel_comunediresidenza() {
-        return destinazione_nel_comunediresidenza;
-    }
 
     @Override
     public String toString() {
@@ -113,9 +104,13 @@ public class Missione {
                 ", id=" + id +
                 ", idOrdine=" + id_ordine +
                 ", dest_missione=" + dest_missione +
-                ", destinazione_nel_comunediresidenza=" + destinazione_nel_comunediresidenza +
                 ", anno=" + anno +
                 ", numero=" + numero +
                 '}';
     }
+
+    public TypeTipoMissione getDest_missione() {
+        return dest_missione;
+    }
+
 }

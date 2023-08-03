@@ -14,6 +14,7 @@ services:
       -Dserver.port=8080
       -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8787
       -Dkeycloak.credentials.secret=20ca9914-f235-412c-a80d-43ce30a97798
+      -Dkeycloak.auth-server-url=https://traefik.test.si.cnr.it/auth
       -Dmaven.wagon.http.ssl.insecure=true
       -Dmaven.wagon.http.ssl.allowall=true
       -Dace.signing.key='NDh5dm5vcTQ2Nm41b2tud3ZqcDU='

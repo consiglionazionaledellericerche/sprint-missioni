@@ -317,11 +317,9 @@ public class RimborsoMissioneService {
                 if (account != null) {
                     idSede = account.getCodice_sede();
                 }
-                Boolean stessoComune = StringUtils.substringMatch(rimborsoMissione.getComuneResidenzaRich(), 0, rimborsoMissione.getDestinazione());
-
                 Missione missione = new Missione(TypeMissione.RIMBORSO, Long.valueOf(rimborsoMissione.getId().toString()), idSede,
                         rimborsoMissione.getMatricola(), rimborsoMissione.getDataInizioMissione(), rimborsoMissione.getDataFineMissione(), Long.valueOf(rimborsoMissione.getOrdineMissione().getId().toString()), rimborsoMissione.isMissioneEstera() ? TypeTipoMissione.ESTERA : TypeTipoMissione.ITALIA,
-                        rimborsoMissione.getAnno(), rimborsoMissione.getNumero(), stessoComune);
+                        rimborsoMissione.getAnno(), rimborsoMissione.getNumero());
                 rabbitMQService.send(missione);
             }
         }

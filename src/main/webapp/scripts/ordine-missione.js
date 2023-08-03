@@ -428,14 +428,6 @@ missioniApp.controller('OrdineMissioneController', function ($rootScope, $scope,
         }
     }
 
-    $scope.onChangeStessoComune = function (valore) {
-        if (valore){
-            $scope.ordineMissioneModel.destinazione = $scope.ordineMissioneModel.comuneResidenzaRich;
-        } else {
-            $scope.ordineMissioneModel.destinazione = '';
-        }
-    }
-    
     $scope.reloadOrdineMissione = function(idOrdineMissione){
 
         for (var i=0; i<$scope.elencoOrdiniMissione.length; i++) {
@@ -644,8 +636,6 @@ missioniApp.controller('OrdineMissioneController', function ($rootScope, $scope,
             $scope.missioneEstera = null;
             $scope.ordineMissioneModel.nazione = null;
         }
-        $scope.ordineMissioneModel.destinazione = '';
-        $scope.stessoComune = false; 
     };
 
     $scope.onChangePartenzaDa = function() {
@@ -722,9 +712,6 @@ missioniApp.controller('OrdineMissioneController', function ($rootScope, $scope,
             if ($scope.ordineMissioneModel.responsabileGruppo && $sessionStorage.account.login == $scope.ordineMissioneModel.responsabileGruppo){
                 $scope.isResponsabileGruppoMissione = true;
             }
-        }
-        if ($scope.ordineMissioneModel.destinazione === $scope.ordineMissioneModel.comuneResidenzaRich) {
-            $scope.stessoComune = true;
         }
         $scope.disabilitaOrdineMissione = impostaDisabilitaOrdineMissione();
         dateInizioFineDiverse();

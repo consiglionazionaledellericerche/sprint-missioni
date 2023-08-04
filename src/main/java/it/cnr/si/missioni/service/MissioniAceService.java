@@ -168,11 +168,10 @@ public class MissioniAceService {
 
     @Cacheable(value = Costanti.NOME_CACHE_DATI_DIRETTORE)
     public String getDirettore(String username) {
-        BossDto direttore = aceService.findResponsabileStruttura(username);
-        if (direttore != null) {
-            return direttore.getUtente().getUsername();
-        }
-        return "";
+        return Optional.ofNullable(aceService.findResponsabileStruttura(username))
+                .flatMap(bossDto -> Optional.ofNullable(bossDto.getUtente()))
+                .flatMap(simpleUtenteWebDto -> Optional.ofNullable(simpleUtenteWebDto.getUsername()))
+                .orElse("");
     }
 
     public SimplePersonaWebDto getPersona(String user) {

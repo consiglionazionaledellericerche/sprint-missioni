@@ -19,10 +19,9 @@
 
 package it.cnr.si.missioni.repository;
 
-import it.cnr.si.missioni.domain.custom.persistence.OrdineMissione;
-import it.cnr.si.missioni.domain.custom.persistence.OrdineMissioneAutoPropria;
+import it.cnr.si.missioni.domain.custom.persistence.AnnullamentoOrdineMissione;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,13 +29,9 @@ import org.springframework.data.jpa.repository.Query;
 /**
  * Spring Data JPA repository for the AutoPropria entity.
  */
-public interface OrdineMissioneAutoPropriaRepository extends
-        JpaRepository<OrdineMissioneAutoPropria, Long> {
-
-    @Query("select a from OrdineMissioneAutoPropria a where a.ordineMissione = ?1 and a.stato != 'ANN'")
-    OrdineMissioneAutoPropria getAutoPropria(OrdineMissione ordineMissione);
+public interface AnnullamentoOrdineMissioneRepository extends
+        JpaRepository<AnnullamentoOrdineMissione, Long> {
     
-    @Query("select a from OrdineMissioneAutoPropria a where a.ordineMissione = ?1")
-    Optional<OrdineMissioneAutoPropria> getAutoPropria(OrdineMissione ordineMissione, boolean all);
-
+    @Query("select a from AnnullamentoOrdineMissione a where a.uid = ?1")
+    List<AnnullamentoOrdineMissione> getAnnullamentoOrdineMissioneByUser(String uid);
 }

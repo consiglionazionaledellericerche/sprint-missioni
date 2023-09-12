@@ -33,4 +33,6 @@ public interface RimborsoMissioneRepository extends JpaRepository<RimborsoMissio
     @Query("select a from RimborsoMissione a where a.uid = ?1")
     List<RimborsoMissione> getRimborsiMissione(String user);
 
+    @Query("select a from RimborsoMissione a where a.uidInsert = ?1")
+    List<RimborsoMissione> getRimborsiMissioneByUidInsert(String uidInsert);
 }

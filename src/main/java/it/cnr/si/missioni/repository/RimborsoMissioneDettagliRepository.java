@@ -36,6 +36,9 @@ public interface RimborsoMissioneDettagliRepository extends
     @Query("select a from RimborsoMissioneDettagli a where a.rimborsoMissione = ?1 and stato != 'ANN' order by riga")
     List<RimborsoMissioneDettagli> getRimborsoMissioneDettagli(RimborsoMissione rimborsoMissione);
 
+    @Query("select a from RimborsoMissioneDettagli a where a.rimborsoMissione = ?1 order by riga")
+    List<RimborsoMissioneDettagli> getRimborsoMissioneDettagli(RimborsoMissione rimborsoMissione, boolean all);
+    
     @Query("select a from RimborsoMissioneDettagli a where a.rimborsoMissione = ?1 and a.dataSpesa = ?2 and stato != 'ANN' order by riga")
     List<RimborsoMissioneDettagli> getRimborsoMissioneDettagli(RimborsoMissione rimborsoMissione, LocalDate data);
 

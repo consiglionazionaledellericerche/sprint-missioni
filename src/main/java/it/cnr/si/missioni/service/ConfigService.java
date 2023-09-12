@@ -22,6 +22,13 @@ package it.cnr.si.missioni.service;
 import it.cnr.si.missioni.awesome.exception.AwesomeException;
 import it.cnr.si.missioni.domain.custom.persistence.DatiIstituto;
 import it.cnr.si.missioni.domain.custom.persistence.DatiSede;
+import it.cnr.si.missioni.repository.AnnullamentoOrdineMissioneRepository;
+import it.cnr.si.missioni.repository.AnnullamentoRimborsoMissioneRepository;
+import it.cnr.si.missioni.repository.OrdineMissioneAnticipoRepository;
+import it.cnr.si.missioni.repository.OrdineMissioneAutoPropriaRepository;
+import it.cnr.si.missioni.repository.OrdineMissioneRepository;
+import it.cnr.si.missioni.repository.RimborsoMissioneDettagliRepository;
+import it.cnr.si.missioni.repository.RimborsoMissioneRepository;
 import it.cnr.si.missioni.util.CodiciErrore;
 import it.cnr.si.missioni.util.Costanti;
 import it.cnr.si.missioni.util.Utility;
@@ -48,7 +55,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,7 +80,14 @@ public class ConfigService {
     private MissioniAceService missioniAceService;
     @Autowired
     private AccountService accountService;
-
+    @Autowired private OrdineMissioneRepository ordineMissioneRepository;
+    @Autowired private AnnullamentoOrdineMissioneRepository annullamentoOrdineMissioneRepository;
+    @Autowired private OrdineMissioneAnticipoRepository ordineMissioneAnticipoRepository;
+    @Autowired private OrdineMissioneAutoPropriaRepository ordineMissioneAutoPropriaRepository;
+    @Autowired private RimborsoMissioneRepository rimborsoMissioneRepository;
+    @Autowired private RimborsoMissioneDettagliRepository rimborsoMissioneDettagliRepository;
+    @Autowired private AnnullamentoRimborsoMissioneRepository annullamentoRimborsoMissioneRepository;
+    
     @PostConstruct
     public void init() {
         loadData(true);
@@ -249,7 +265,65 @@ public class ConfigService {
             }
         }
     }
+    
+    public Set<String> rinominaUtente(String oldUsername, String newUsername) {
+        Set<String> listaModifiche = new HashSet<>();
+        
+        ordineMissioneRepository.getOrdiniMissione(oldUsername).forEach(om -> {
+            om.setUid(newUsername); 
+            listaModifiche.add("ordine " + String.valueOf(om.getId()));
+            ordineMissioneRepository.save(om);
 
+            ordineMissioneAnticipoRepository.getAnticipo(om, true).ifPresent(anticipo -> {
+                anticipo.setUid(newUsername);
+                ordineMissioneAnticipoRepository.save(anticipo);                
+            });
+            
+            ordineMissioneAutoPropriaRepository.getAutoPropria(om, true).ifPresent(autoPropria -> {
+                autoPropria.setUid(newUsername);
+                ordineMissioneAutoPropriaRepository.save(autoPropria);                
+            });
+        });
+        
+        ordineMissioneRepository.getOrdiniMissioneByUidInsert(oldUsername).forEach(om -> {
+            om.setUidInsert(newUsername);
+            listaModifiche.add("ordine " + String.valueOf(om.getId()));
+            ordineMissioneRepository.save(om);
+        });
+        
+        annullamentoOrdineMissioneRepository.getAnnullamentoOrdineMissioneByUser(oldUsername).forEach(aom ->{
+            aom.setUid(newUsername);
+            listaModifiche.add("annullamento ordine " + String.valueOf(aom.getId()));
+            annullamentoOrdineMissioneRepository.save(aom);
+        });
+        
+        rimborsoMissioneRepository.getRimborsiMissione(oldUsername).forEach(rm -> {
+            rm.setUid(newUsername);
+            listaModifiche.add("rimborso " + String.valueOf(rm.getId()));
+            rimborsoMissioneRepository.save(rm);
+            
+            rimborsoMissioneDettagliRepository.getRimborsoMissioneDettagli(rm, true).forEach(rmd -> {
+                rmd.setUid(newUsername);
+                listaModifiche.add("rimborso " + String.valueOf(rm.getId()));
+                rimborsoMissioneDettagliRepository.save(rmd);
+            });
+        });
+        
+        rimborsoMissioneRepository.getRimborsiMissioneByUidInsert(oldUsername).forEach(rm -> {
+            rm.setUidInsert(newUsername);
+            listaModifiche.add("rimborso " + String.valueOf(rm.getId()));
+            rimborsoMissioneRepository.save(rm);
+        });
+        
+        annullamentoRimborsoMissioneRepository.getAnnullamentoRimborsoMissioneByUser(oldUsername).forEach(arm -> {
+            arm.setUid(newUsername);
+            listaModifiche.add("annullamento rimborso " + String.valueOf(arm.getId()));
+            annullamentoRimborsoMissioneRepository.save(arm);
+        });
+
+        return listaModifiche;
+    }
+    
     private RuoloPersonaDto preparePersonaDto(SimpleEntitaOrganizzativaWebDto sede) {
         LocalDate now = LocalDate.now();
         LocalDate firstDayOfYear = now.with(TemporalAdjusters.firstDayOfYear());

@@ -33,5 +33,7 @@ public interface OrdineMissioneRepository extends
 
     @Query("select a from OrdineMissione a where a.uid = ?1")
     List<OrdineMissione> getOrdiniMissione(String user);
-
+    
+    @Query("select a from OrdineMissione a where a.uidInsert = ?1")
+    List<OrdineMissione> getOrdiniMissioneByUidInsert(String uidInsert);
 }

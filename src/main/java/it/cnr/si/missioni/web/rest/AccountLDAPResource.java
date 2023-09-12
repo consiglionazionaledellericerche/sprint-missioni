@@ -22,6 +22,7 @@ package it.cnr.si.missioni.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import it.cnr.si.config.KeycloakRole;
 import it.cnr.si.domain.CNRUser;
+import it.cnr.si.missioni.service.ConfigService;
 import it.cnr.si.missioni.service.showcase.ACEService;
 import it.cnr.si.missioni.util.proxy.json.service.AccountService;
 import it.cnr.si.security.AuthoritiesConstants;
@@ -59,6 +60,9 @@ public class AccountLDAPResource {
 
     @Autowired(required = false)
     private ACEService aceServiceShowcase;
+    
+    @Autowired 
+    private ConfigService configService;
 
     @Autowired
     private Environment env;
@@ -150,5 +154,18 @@ public class AccountLDAPResource {
                 .ifPresent(profile -> map.put("ribbonEnv", profile));
 
         return new ResponseEntity(map, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/rinominaUtente", method = RequestMethod.POST)
+    public ResponseEntity<Set<String>> rinominaUtente(@RequestParam String oldUsername, @RequestParam String newUsername) {
+        
+        // funzionalita' disponibile solo all'admin e all'app Gestione Utenti
+        if (!"app.utenti".equals(securityService.getCurrentUserLogin()) &&
+                !"app.missioni".equals(securityService.getCurrentUserLogin()))
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        
+        Set<String> listaModifiche = configService.rinominaUtente(oldUsername, newUsername);
+
+        return ResponseEntity.ok(listaModifiche);
     }
 }

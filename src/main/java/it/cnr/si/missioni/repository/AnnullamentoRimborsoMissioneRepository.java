@@ -21,6 +21,9 @@ package it.cnr.si.missioni.repository;
 
 import it.cnr.si.missioni.domain.custom.persistence.AnnullamentoRimborsoMissione;
 import it.cnr.si.missioni.domain.custom.persistence.RimborsoMissione;
+
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -33,4 +36,6 @@ public interface AnnullamentoRimborsoMissioneRepository extends
     @Query("select a from AnnullamentoRimborsoMissione a where a.rimborsoMissione = ?1 and a.stato != 'ANN'")
     AnnullamentoRimborsoMissione getAnnullamentoRimborsoMissione(RimborsoMissione rimborsoMissione);
 
+    @Query("select a from AnnullamentoRimborsoMissione a where a.uid = ?1")
+    List<AnnullamentoRimborsoMissione> getAnnullamentoRimborsoMissioneByUser(String uid);
 }

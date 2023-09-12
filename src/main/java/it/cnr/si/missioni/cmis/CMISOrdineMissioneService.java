@@ -769,10 +769,12 @@ public class CMISOrdineMissioneService {
             } catch (AwesomeException e) {
                 throw e;
             } catch (Exception e) {
+                logger.error("Errore", e);
                 throw new AwesomeException(CodiciErrore.ERRGEN, "Errore in fase avvio flusso documentale. Errore: " + Utility.getMessageException(e) + ".");
             }
 
         } catch (Exception e) {
+            logger.error("Errore", e);
             throw new AwesomeException(CodiciErrore.ERRGEN, "Errore in fase di preparazione del flusso documentale. Errore: " + e);
         }
 

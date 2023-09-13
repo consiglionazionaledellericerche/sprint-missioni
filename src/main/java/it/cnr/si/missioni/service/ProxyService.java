@@ -76,14 +76,14 @@ public class ProxyService implements EnvironmentAware {
 
     @Cacheable(value = Costanti.NOME_CACHE_PROXY)
     public ResultProxy processInCache(CallCache callCache) throws AwesomeException {
-        log.info("Process in Cache 2: " + callCache.toString());
+        log.debug("Process in Cache 2: " + callCache.toString());
         ResultProxy resultProxyForCache = process(callCache.getHttpMethod(), callCache.getBody(), callCache.getApp(), callCache.getUrl(), callCache.getQueryString(), callCache.getAuthorization());
         log.debug("Response Cache 2: " + resultProxyForCache.toString());
         return resultProxyForCache(callCache, resultProxyForCache);
     }
 
     public ResultProxy process(CallCache callCache) throws AwesomeException {
-        log.info("Process in Cache 1: " + callCache.toString());
+        log.debug("Process in Cache 1: " + callCache.toString());
         ResultProxy resultProxyForCache = process(callCache.getHttpMethod(), callCache.getBody(), callCache.getApp(), callCache.getUrl(), callCache.getQueryString(), callCache.getAuthorization());
         return resultProxyForCache(callCache, resultProxyForCache);
     }
@@ -136,9 +136,9 @@ public class ProxyService implements EnvironmentAware {
 
         String proxyURL = impostaUrl(app, url, queryString);
         HttpEntity<String> requestEntity = new HttpEntity<String>(body, headers);
-        log.info("Url: " + proxyURL);
-        log.info("Header: " + headers);
-        log.info("Body: " + body);
+        log.debug("Url: " + proxyURL);
+        log.debug("Header: " + headers);
+        log.debug("Body: " + body);
         try {
             ResponseEntity<String> result = getRestTemplate(app).
                     exchange(proxyURL, httpMethod, requestEntity, String.class);
@@ -177,9 +177,9 @@ public class ProxyService implements EnvironmentAware {
 
         String proxyURL = impostaUrl(app, url, queryString);
 
-        log.info("Url: " + proxyURL);
-        log.info("Header: " + headers);
-        log.info("Body: " + body);
+        log.debug("Url: " + proxyURL);
+        log.debug("Header: " + headers);
+        log.debug("Body: " + body);
         try {
             ResponseEntity<String> result = getRestTemplate(app).
                     exchange(proxyURL, httpMethod, requestEntity, String.class);
@@ -230,7 +230,7 @@ public class ProxyService implements EnvironmentAware {
         final Boolean clientCredentials = environment.getProperty("spring.proxy." + app + ".client_credentials", Boolean.class, Boolean.FALSE);
         if (clientCredentials) {
             final String token = keycloak.tokenManager().getAccessToken().getToken();
-            log.info("Token: {}", token);
+            log.debug("Token: {}", token);
             headers.add("Authorization", "Bearer " + token);
         } else {
             if (username != null && password != null) {

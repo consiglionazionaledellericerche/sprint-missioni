@@ -20,12 +20,16 @@
 package it.cnr.si.missioni.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+
+import it.cnr.si.flows.model.ProcessDefinitions;
 import it.cnr.si.missioni.service.ConfigService;
 import it.cnr.si.missioni.service.CronService;
 import it.cnr.si.missioni.util.Costanti;
 import it.cnr.si.missioni.util.JSONResponseEntity;
 import it.cnr.si.missioni.util.data.Faq;
 import it.cnr.si.security.AuthoritiesConstants;
+import it.cnr.si.service.application.FlowsService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +59,9 @@ public class ConfigResource {
 
     @Autowired
     private ConfigService configService;
+    
+    @Autowired
+    private FlowsService flowsService;
 
     @RolesAllowed({AuthoritiesConstants.USER})
     @RequestMapping(value = "/rest/config/message",
@@ -206,5 +213,16 @@ public class ConfigResource {
     public void aggiornaPersonaleNonDipendente() {
         log.info("REST request per aggiornare i dati su ACE");
         configService.aggiornaRapportoPersonaleEsterno();
+    }
+
+    
+    
+    @RequestMapping(value = "/verificaConnessioneScrivania",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity verificaConnessioneScrivania() {
+        ResponseEntity<ProcessDefinitions> processDefinitions = flowsService.getProcessDefinitions("missioni");
+        return JSONResponseEntity.ok(processDefinitions);
     }
 }

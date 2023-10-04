@@ -376,7 +376,7 @@ public class ComunicaRimborsoSiglaService {
             String app = Costanti.APP_SIGLA;
             String url = Costanti.REST_COMUNICA_RIMBORSO_SIGLA;
             String body = prepareBody(missione);
-
+            log.debug(body);
             String risposta = commonService.process(body, app, url, true, HttpMethod.PUT);
             try {
                 ObjectMapper mapper = new ObjectMapper();

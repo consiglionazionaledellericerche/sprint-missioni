@@ -45,6 +45,7 @@
     <logger name="it.cnr" level="INFO"/>
     <logger name="com.sun" level="WARN"/>
     <logger name="com.hazelcast" level="INFO"/>
+    <logger name="it.cnr.si.missioni.util.proxy.json.service.ComunicaRimborsoSiglaService" level="DEBUG"/>
 
     <root level="WARN">
         <appender-ref ref="ASYNC_SYSLOG_APPENDER" />

@@ -623,7 +623,7 @@ public class CMISOrdineMissioneService {
         }
     }
 
-    public void avviaFlussoNuovaScrivania(OrdineMissione ordineMissione) {
+    public void     avviaFlussoNuovaScrivania(OrdineMissione ordineMissione) {
         String username = securityService.getCurrentUserLogin();
         byte[] stampa = printOrdineMissioneService.printOrdineMissione(ordineMissione, username);
         CMISOrdineMissione cmisOrdineMissione = create(ordineMissione);

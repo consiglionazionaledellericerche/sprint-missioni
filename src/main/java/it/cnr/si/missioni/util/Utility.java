@@ -157,7 +157,7 @@ public class Utility {
         }
     }
 
-    public static String getMessageException(Exception e) {
+    public static String getMessageException(Throwable e) {
         String obj = e.getLocalizedMessage() == null ? (e.getCause() == null ? ExceptionUtils.getStackTrace(e) : e.getCause().toString()) : e.getLocalizedMessage();
         log.debug("Errore", e);
 

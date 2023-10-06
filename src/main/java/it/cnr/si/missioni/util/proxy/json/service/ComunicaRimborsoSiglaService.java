@@ -34,6 +34,7 @@ import it.cnr.si.missioni.util.CodiciErrore;
 import it.cnr.si.missioni.util.Costanti;
 import it.cnr.si.missioni.util.DateUtils;
 import it.cnr.si.missioni.util.Utility;
+import it.cnr.si.missioni.util.data.UsersSpecial;
 import it.cnr.si.missioni.util.proxy.json.object.Account;
 import it.cnr.si.missioni.util.proxy.json.object.rimborso.*;
 import it.cnr.si.service.SecurityService;
@@ -42,17 +43,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContextException;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ComunicaRimborsoSiglaService {
@@ -100,7 +106,28 @@ public class ComunicaRimborsoSiglaService {
                 comunicaRimborso(rimborsoApprovato);
             }
             return null;
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            throw generaErrore(e, rimborsoApprovato);
+        }
+    }
+
+    private AwesomeException generaErrore(Throwable e, RimborsoMissione rimborsoApprovato) {
+        if (e instanceof ApplicationContextException) {
+            return generaErrore(e.getCause(), rimborsoApprovato);
+        } else if (e instanceof HttpClientErrorException.BadRequest) {
+            String error = Utility.getMessageException(e);
+            String testoErrore = getTextErrorComunicaRimborso(rimborsoApprovato, error);
+            final String[] emails = accountService.getUserSpecialForUo(rimborsoApprovato.getUoSpesa(), true)
+                    .stream()
+                    .map(usersSpecial -> accountService.getEmail(usersSpecial.getUid()))
+                    .toArray(String[]::new);
+            try {
+                log.debug("Inviata email di errore per rimborso SIGLA a {}", emails);
+                mailService.sendEmail(subjectErrorComunicazioneRimborso, testoErrore, false, true, emails);
+            } catch (Exception e1) {
+                log.error("Errore durante l'invio dell'e-mail: " + e1);
+            }
+        } else {
             String error = Utility.getMessageException(e);
             String testoErrore = getTextErrorComunicaRimborso(rimborsoApprovato, error);
             log.error(testoErrore + " " + e);
@@ -109,12 +136,12 @@ public class ComunicaRimborsoSiglaService {
             } catch (Exception e1) {
                 log.error("Errore durante l'invio dell'e-mail: " + e1);
             }
-            throw new AwesomeException(CodiciErrore.ERRGEN, Utility.getMessageException(e));
         }
+        throw new AwesomeException(CodiciErrore.ERRGEN, Utility.getMessageException(e));
     }
 
     private String getTextErrorComunicaRimborso(RimborsoMissione rimborsoMissione, String error) {
-        return textErrorComunicazioneRimborso + " con id " + rimborsoMissione.getId() + " " + rimborsoMissione.getAnno() + "-" + rimborsoMissione.getNumero() + " di " + rimborsoMissione.getDatoreLavoroRich() + " è andata in errore per il seguente motivo: " + error;
+        return textErrorComunicazioneRimborso + " con id " + rimborsoMissione.getId() + " numero: " + rimborsoMissione.getAnno() + "/" + rimborsoMissione.getNumero() + " di " + rimborsoMissione.getUid() + " su " + rimborsoMissione.getDatoreLavoroRich() + " è andata in errore per il seguente motivo: " + error;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

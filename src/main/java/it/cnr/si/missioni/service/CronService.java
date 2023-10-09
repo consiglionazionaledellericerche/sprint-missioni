@@ -23,6 +23,7 @@ package it.cnr.si.missioni.service;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ILock;
 import it.cnr.jada.ejb.session.ComponentException;
+import it.cnr.si.missioni.awesome.exception.AwesomeException;
 import it.cnr.si.missioni.domain.custom.persistence.AnnullamentoOrdineMissione;
 import it.cnr.si.missioni.domain.custom.persistence.DatiIstituto;
 import it.cnr.si.missioni.domain.custom.persistence.OrdineMissione;
@@ -318,6 +319,7 @@ public class CronService {
             LOGGER.debug("Missione Comunicabile: " + rimborsoMissione.getId());
             try {
                 comunicaRimborsoSiglaService.comunicaRimborsoSigla(rimborsoMissione.getId());
+            } catch (AwesomeException _ex) {
             } catch (Exception e) {
                 String error = Utility.getMessageException(e);
                 String testoErrore = getTextErrorComunicaRimborso(rimborsoMissione, error);

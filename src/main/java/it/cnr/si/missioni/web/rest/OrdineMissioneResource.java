@@ -247,7 +247,7 @@ public class OrdineMissioneResource {
             try {
                 ordineMissione = ordineMissioneService.createOrdineMissione(ordineMissione);
             } catch (AwesomeException e) {
-                log.error("ERRORE createOrdineMissione", e);
+                log.debug("ERRORE createOrdineMissione", e);
                 return JSONResponseEntity.getResponse(HttpStatus.BAD_REQUEST, Utility.getMessageException(e));
             } catch (Exception e) {
                 log.error("ERRORE createOrdineMissione", e);
@@ -271,7 +271,7 @@ public class OrdineMissioneResource {
             try {
                 ordineMissione = ordineMissioneService.updateOrdineMissione(ordineMissione);
             } catch (AwesomeException e) {
-                log.error("ERRORE modifyOrdineMissione", e);
+                log.debug("ERRORE modifyOrdineMissione", e);
                 return JSONResponseEntity.getResponse(HttpStatus.BAD_REQUEST, Utility.getMessageException(e));
             } catch (Exception e) {
                 log.error("ERRORE modifyOrdineMissione", e);
@@ -300,7 +300,7 @@ public class OrdineMissioneResource {
             try {
                 ordineMissione = ordineMissioneService.updateOrdineMissione(ordineMissione, false, confirm, basePath);
             } catch (AwesomeException e) {
-                log.error("ERRORE confirmOrdineMissione", e);
+                log.debug("ERRORE confirmOrdineMissione", e);
                 return JSONResponseEntity.getResponse(HttpStatus.BAD_REQUEST, Utility.getMessageException(e));
             } catch (Exception e) {
                 log.error("ERRORE confirmOrdineMissione", e);
@@ -323,7 +323,7 @@ public class OrdineMissioneResource {
             ordineMissioneService.deleteOrdineMissione(ids);
             return JSONResponseEntity.ok();
         } catch (AwesomeException e) {
-            log.error("ERRORE deleteOrdineMissione", e);
+            log.debug("ERRORE deleteOrdineMissione", e);
             return JSONResponseEntity.getResponse(HttpStatus.BAD_REQUEST, Utility.getMessageException(e));
         } catch (Exception e) {
             log.error("ERRORE deleteOrdineMissione", e);
@@ -464,7 +464,7 @@ public class OrdineMissioneResource {
                 ordineMissioneService.gestioneCancellazioneAllegati(id, idOrdine);
                 return JSONResponseEntity.ok();
             } catch (AwesomeException e) {
-                log.error("deleteAttachment", e);
+                log.debug("deleteAttachment", e);
                 return JSONResponseEntity.badRequest(Utility.getMessageException(e));
             }
         } else {

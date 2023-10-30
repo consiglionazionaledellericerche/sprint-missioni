@@ -189,7 +189,7 @@ public class RimborsoMissioneResource {
             impostaTotaliRimborso(rimborsoMissione);
             return JSONResponseEntity.ok(rimborsoMissione);
         } catch (AwesomeException e) {
-            log.error("ERRORE getRimborsoMissione", e);
+            log.debug("ERRORE getRimborsoMissione", e);
             return JSONResponseEntity.getResponse(HttpStatus.BAD_REQUEST, Utility.getMessageException(e));
         } catch (Exception e) {
             log.error("ERRORE getRimborsoMissione", e);
@@ -215,7 +215,7 @@ public class RimborsoMissioneResource {
             try {
                 rimborsoMissione = rimborsoMissioneService.createRimborsoMissione(rimborsoMissione);
             } catch (AwesomeException e) {
-                log.error("ERRORE createRimborsoMissione", e);
+                log.debug("ERRORE createRimborsoMissione", e);
                 return JSONResponseEntity.getResponse(HttpStatus.BAD_REQUEST, Utility.getMessageException(e));
             } catch (Exception e) {
                 log.error("ERRORE createRimborsoMissione", e);
@@ -239,7 +239,7 @@ public class RimborsoMissioneResource {
             try {
                 rimborsoMissione = rimborsoMissioneService.updateRimborsoMissione(rimborsoMissione, null);
             } catch (AwesomeException e) {
-                log.error("ERRORE modifyRimborsoMissione", e);
+                log.debug("ERRORE modifyRimborsoMissione", e);
                 return JSONResponseEntity.getResponse(HttpStatus.BAD_REQUEST, Utility.getMessageException(e));
             } catch (Exception e) {
                 log.error("ERRORE modifyRimborsoMissione", e);
@@ -266,7 +266,7 @@ public class RimborsoMissioneResource {
             try {
                 rimborsoMissione = rimborsoMissioneService.updateRimborsoMissione(rimborsoMissione, false, confirm, basePath);
             } catch (AwesomeException e) {
-                log.error("ERRORE confirmRimborsoMissione", e);
+                log.debug("ERRORE confirmRimborsoMissione", e);
                 return JSONResponseEntity.getResponse(HttpStatus.BAD_REQUEST, Utility.getMessageException(e));
             } catch (Exception e) {
                 log.error("ERRORE confirmRimborsoMissione", e);
@@ -289,7 +289,7 @@ public class RimborsoMissioneResource {
             rimborsoMissioneService.deleteRimborsoMissione(ids);
             return JSONResponseEntity.ok();
         } catch (AwesomeException e) {
-            log.error("ERRORE deleteRimborsoMissione", e);
+            log.debug("ERRORE deleteRimborsoMissione", e);
             return JSONResponseEntity.getResponse(HttpStatus.BAD_REQUEST, Utility.getMessageException(e));
         } catch (Exception e) {
             log.error("ERRORE deleteRimborsoMissione", e);

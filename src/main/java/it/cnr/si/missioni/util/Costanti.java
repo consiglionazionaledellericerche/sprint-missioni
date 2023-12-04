@@ -20,6 +20,7 @@
 package it.cnr.si.missioni.util;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 
@@ -194,6 +195,8 @@ public class Costanti {
     public final static Map<String, String> STATO_INVIO_SIGLA;
     public final static Map<String, String> FONDI;
 
+    public final static ZonedDateTime DATA_AGGIORNAMENTO_MANUALE_MISSIONI_2023 = ZonedDateTime.parse("2023-10-18T00:00:00+01:00[Europe/Rome]");
+    
     static {
         Map<String, String> aMap = new HashMap<String, String>();
         aMap.put(TIPO_DOCUMENTO_ALLEGATO, "Allegato");

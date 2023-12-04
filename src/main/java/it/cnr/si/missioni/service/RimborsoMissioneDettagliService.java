@@ -214,24 +214,40 @@ public class RimborsoMissioneDettagliService {
     }
 
     protected void controlloCongruenzaPasto(RimborsoMissioneDettagli rimborsoMissioneDettagli,
-                                            RimborsoMissione rimborsoMissione, Integer livello) {
-        long oreDifferenza = ChronoUnit.HOURS.between(rimborsoMissione.getDataInizioMissione().truncatedTo(ChronoUnit.MINUTES), rimborsoMissione.getDataFineMissione().truncatedTo(ChronoUnit.MINUTES));
-        if (rimborsoMissione.getOrdineMissione().getId() != null) {
-            OrdineMissione ordineMissione = (OrdineMissione) crudServiceBean.findById(
-                    OrdineMissione.class, rimborsoMissione.getOrdineMissione().getId());
-            if (ordineMissione != null && Utility.nvl(ordineMissione.getPersonaleAlSeguito()).equals("S") && (!rimborsoMissione.isAssociato() || (rimborsoMissione.getInquadramento() != null && rimborsoMissione.getInquadramento().compareTo(Long.valueOf(47)) < 0))) {
-                livello = 3;
+                                            RimborsoMissione rimborsoMissione, @Deprecated Integer livello) {
+
+        long oreDifferenza = ChronoUnit.HOURS.between(
+                rimborsoMissione.getDataInizioMissione().truncatedTo(ChronoUnit.MINUTES), 
+                rimborsoMissione.getDataFineMissione().truncatedTo(ChronoUnit.MINUTES));
+
+        if (rimborsoMissione.getDataInizioMissione().isBefore(Costanti.DATA_AGGIORNAMENTO_MANUALE_MISSIONI_2023)) {
+            if (rimborsoMissione.getOrdineMissione().getId() != null) {
+                OrdineMissione ordineMissione = (OrdineMissione) crudServiceBean.findById(
+                        OrdineMissione.class, rimborsoMissione.getOrdineMissione().getId());
+                if (ordineMissione != null && 
+                        Utility.nvl(ordineMissione.getPersonaleAlSeguito()).equals("S") && 
+                        (!rimborsoMissione.isAssociato() 
+                                || (rimborsoMissione.getInquadramento() != null 
+                                && rimborsoMissione.getInquadramento().compareTo(Long.valueOf(47)) < 0))) {
+                    livello = 3;
+                }
             }
-        }
-        if (livello < 4) {
+            if (livello < 4) {
+                if (oreDifferenza < 4 || (oreDifferenza < 12 && rimborsoMissioneDettagli.getCdTiPasto().startsWith("G"))) {
+                    throw new AwesomeException(CodiciErrore.ERRGEN, "Tipo pasto non spettante per la durata della missione");
+                }
+            } else {
+                if (oreDifferenza < 8 || (oreDifferenza < 12 && rimborsoMissioneDettagli.getCdTiPasto().startsWith("G"))) {
+                    throw new AwesomeException(CodiciErrore.ERRGEN, "Tipo pasto non spettante per la durata della missione");
+                }
+            }
+            
+        } else {
             if (oreDifferenza < 4 || (oreDifferenza < 12 && rimborsoMissioneDettagli.getCdTiPasto().startsWith("G"))) {
                 throw new AwesomeException(CodiciErrore.ERRGEN, "Tipo pasto non spettante per la durata della missione");
             }
-        } else {
-            if (oreDifferenza < 8 || (oreDifferenza < 12 && rimborsoMissioneDettagli.getCdTiPasto().startsWith("G"))) {
-                throw new AwesomeException(CodiciErrore.ERRGEN, "Tipo pasto non spettante per la durata della missione");
-            }
         }
+        
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

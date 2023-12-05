@@ -19,6 +19,24 @@
 
 package it.cnr.si.missioni.web.rest;
 
+import java.util.Set;
+
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.codahale.metrics.annotation.Timed;
 
 import it.cnr.si.flows.model.ProcessDefinitions;
@@ -28,21 +46,8 @@ import it.cnr.si.missioni.util.Costanti;
 import it.cnr.si.missioni.util.JSONResponseEntity;
 import it.cnr.si.missioni.util.data.Faq;
 import it.cnr.si.security.AuthoritiesConstants;
+import it.cnr.si.service.SecurityService;
 import it.cnr.si.service.application.FlowsService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * REST controller for managing config.
@@ -56,10 +61,10 @@ public class ConfigResource {
 
     @Autowired(required = false)
     private CronService cronService;
-
     @Autowired
     private ConfigService configService;
-    
+    @Autowired
+    private SecurityService securityService;
     @Autowired
     private FlowsService flowsService;
 
@@ -221,8 +226,20 @@ public class ConfigResource {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity verificaConnessioneScrivania() {
-        ResponseEntity<ProcessDefinitions> processDefinitions = flowsService.getProcessDefinitions("missioni");
-        return JSONResponseEntity.ok(processDefinitions);
+    public ResponseEntity<ProcessDefinitions> verificaConnessioneScrivania() {
+        return flowsService.getProcessDefinitions("missioni");
+    }
+    
+    @RequestMapping(value = "/rinominaUtente", method = RequestMethod.POST)
+    public ResponseEntity<Set<String>> rinominaUtente(@RequestParam String oldUsername, @RequestParam String newUsername) {
+        
+        // funzionalita' disponibile solo all'admin e all'app Gestione Utenti
+        if (!"app.utenti".equals(securityService.getCurrentUserLogin()) &&
+                !"app.missioni".equals(securityService.getCurrentUserLogin()))
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        
+        Set<String> listaModifiche = configService.rinominaUtente(oldUsername, newUsername);
+
+        return ResponseEntity.ok(listaModifiche);
     }
 }

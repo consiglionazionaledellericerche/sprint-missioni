@@ -1,6 +1,8 @@
 package it.cnr.si.missioni.amq.service;
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -39,7 +41,9 @@ public class CambioUsernameConsumer {
         MessaggioCambioUsername message;
         try {
             message = om.readValue(byteMessage, MessaggioCambioUsername.class);
-            configService.rinominaUtente(message.getOldUsername(), message.getNewUsername());
+            Set<String> listaModifiche = configService.rinominaUtente(message.getOldUsername(), message.getNewUsername());
+            LOGGER.info("RinominaUtente per il messaggio "+ new String(byteMessage) +" eseguito con successo "+
+                        listaModifiche.stream().collect(Collectors.joining(", ")));
         } catch (IOException e) {
             String stringMessage = "parsingError"; // try to get the input string, else get a parsing error
             try {stringMessage = new String(byteMessage);} catch (Exception ex) {/* no action*/}

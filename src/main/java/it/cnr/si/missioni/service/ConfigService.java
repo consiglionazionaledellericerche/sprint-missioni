@@ -291,6 +291,12 @@ public class ConfigService {
             ordineMissioneRepository.save(om);
         });
         
+        ordineMissioneRepository.getOrdiniMissioneByResponsabileGruppo(oldUsername).forEach(om -> {
+            om.setResponsabileGruppo(newUsername);
+            listaModifiche.add("ordine (aggiornato ResponsabileGruppo) " + String.valueOf(om.getId()));
+            ordineMissioneRepository.save(om);            
+        });
+        
         annullamentoOrdineMissioneRepository.getAnnullamentoOrdineMissioneByUser(oldUsername).forEach(aom ->{
             aom.setUid(newUsername);
             listaModifiche.add("annullamento ordine " + String.valueOf(aom.getId()));

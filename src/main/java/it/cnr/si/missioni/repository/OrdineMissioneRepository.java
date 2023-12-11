@@ -36,4 +36,7 @@ public interface OrdineMissioneRepository extends
     
     @Query("select a from OrdineMissione a where a.uidInsert = ?1")
     List<OrdineMissione> getOrdiniMissioneByUidInsert(String uidInsert);
+    
+    @Query("select a from OrdineMissione a where a.responsabileGruppo = ?1")
+    List<OrdineMissione> getOrdiniMissioneByResponsabileGruppo(String responsabileGruppo);
 }

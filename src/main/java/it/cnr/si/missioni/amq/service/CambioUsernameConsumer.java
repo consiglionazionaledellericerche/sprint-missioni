@@ -36,17 +36,19 @@ public class CambioUsernameConsumer {
     @RabbitHandler
     public void process(@Payload byte[] byteMessage) throws IOException {
         
-        LOGGER.info("Ricevuto Messaggio cambio username: "+ new String(byteMessage));
+        String stringMessage = "parsingError"; // try to get the input string, else get a parsing error
+        try {stringMessage = new String(byteMessage);} catch (Exception ex) {/* no action*/}
+        
+        mailService.sendEmailError("Errore nella lettura del messaggio cambioUsername", stringMessage, false, true);
+        LOGGER.info("Ricevuto Messaggio cambio username: "+ stringMessage);
         
         MessaggioCambioUsername message;
         try {
             message = om.readValue(byteMessage, MessaggioCambioUsername.class);
             Set<String> listaModifiche = configService.rinominaUtente(message.getOldUsername(), message.getNewUsername());
-            LOGGER.info("RinominaUtente per il messaggio "+ new String(byteMessage) +" eseguito con successo "+
+            LOGGER.info("RinominaUtente per il messaggio "+ stringMessage +" eseguito con successo "+
                         listaModifiche.stream().collect(Collectors.joining(", ")));
         } catch (IOException e) {
-            String stringMessage = "parsingError"; // try to get the input string, else get a parsing error
-            try {stringMessage = new String(byteMessage);} catch (Exception ex) {/* no action*/}
             LOGGER.error("Errore nella lettura del messaggio cambioUsername: "+ stringMessage, e);
             mailService.sendEmailError("Errore nella lettura del messaggio cambioUsername", stringMessage, false, true);
             throw e;

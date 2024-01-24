@@ -13,7 +13,9 @@ missioniApp.controller('HelpdeskController', function($scope, $rootScope, $locat
                     if (data[k].sottocategorie && data[k].sottocategorie.length > 0) {
                         
                         $scope.categorie = data[k].sottocategorie.filter(function(c) {
-                            if (c.nome === "Ordine di Missione" || c.nome === "Rimborso Missione" )
+                            if (c.nome === "Ordine di Missione" || 
+                                c.nome === "Rimborso Missione" ||
+                                c.nome === "Annullamento ODM Approvato")
                                 return false;
                             else
                                 return true;

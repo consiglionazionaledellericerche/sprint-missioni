@@ -39,7 +39,7 @@ public class CambioUsernameConsumer {
         String stringMessage = "parsingError"; // try to get the input string, else get a parsing error
         try {stringMessage = new String(byteMessage);} catch (Exception ex) {/* no action*/}
         
-        mailService.sendEmailError("Errore nella lettura del messaggio cambioUsername", stringMessage, false, true);
+        mailService.sendEmailError("Ricevuto messaggio cambioUsername", stringMessage, false, true);
         LOGGER.info("Ricevuto Messaggio cambio username: "+ stringMessage);
         
         MessaggioCambioUsername message;

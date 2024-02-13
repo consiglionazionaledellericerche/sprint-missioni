@@ -239,8 +239,11 @@ public class AnnullamentoOrdineMissioneService {
             if (account != null) {
                 idSede = account.getCodice_sede();
             }
+            String matricola = annullamento.getOrdineMissione().getMatricola() != null ? 
+                    annullamento.getOrdineMissione().getMatricola() :
+                        annullamento.getMatricola();
             Missione missione = new Missione(TypeMissione.ANNULLAMENTO, Long.valueOf(annullamento.getId().toString()), idSede,
-                    annullamento.getOrdineMissione().getMatricola(), annullamento.getOrdineMissione().getDataInizioMissione(),
+                    matricola, annullamento.getOrdineMissione().getDataInizioMissione(),
                     annullamento.getOrdineMissione().getDataFineMissione(), Long.valueOf(annullamento.getOrdineMissione().getId().toString()), annullamento.getOrdineMissione().isMissioneEstera() ? TypeTipoMissione.ESTERA : TypeTipoMissione.ITALIA,
                     annullamento.getOrdineMissione().getAnno(), annullamento.getOrdineMissione().getNumero());
             rabbitMQService.send(missione);

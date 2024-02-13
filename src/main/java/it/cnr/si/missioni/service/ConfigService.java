@@ -194,6 +194,7 @@ public class ConfigService {
         try {
             missioniAceService.importPersonaleEsterno();
         } catch (IOException e) {
+            logger.error("Errore in importPersonaleEsterno", e);
             throw new AwesomeException(CodiciErrore.ERRGEN,
                     "Aggiornamenti personale esterno");
         }

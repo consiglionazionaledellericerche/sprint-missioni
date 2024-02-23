@@ -4,7 +4,7 @@
 var httpHeaders;
 
 var missioniApp = angular.module('missioniApp', ['ngCookies', 'http-auth-interceptor', 'tmh.dynamicLocale', 'ng-currency',
-    'ngResource', 'ngRoute', 'ngStorage', 'missioniAppUtils', 'pascalprecht.translate', 'truncate','selectize', 'ui.select', 'ngSanitize','blueimp.fileupload']);
+    'ngResource', 'ngRoute', 'ngStorage', 'missioniAppUtils', 'pascalprecht.translate', 'truncate','selectize', 'ui.select', 'ngSanitize','blueimp.fileupload','ui.bootstrap']);
 
 missioniApp
   .service('ui', function () {

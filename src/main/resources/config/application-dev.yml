@@ -90,6 +90,9 @@ ace:
   username: ${spring.proxy.vecchiaScrivania.username}
   password: ${spring.proxy.vecchiaScrivania.password}
 
+geo:
+  url: https://zuul-server.test.si.cnr.it/api/geo
+
 authJWT:
   username: ace
   password: 

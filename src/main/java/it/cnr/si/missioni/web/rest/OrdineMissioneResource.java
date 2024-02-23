@@ -24,6 +24,8 @@ import it.cnr.jada.ejb.session.ComponentException;
 import it.cnr.si.missioni.awesome.exception.AwesomeException;
 import it.cnr.si.missioni.cmis.CMISFileAttachment;
 import it.cnr.si.missioni.cmis.MimeTypes;
+import it.cnr.si.missioni.config.GEO;
+import it.cnr.si.missioni.domain.custom.ComuniDTO;
 import it.cnr.si.missioni.domain.custom.persistence.OrdineMissione;
 import it.cnr.si.missioni.service.OrdineMissioneService;
 import it.cnr.si.missioni.util.Costanti;
@@ -51,10 +53,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -73,6 +72,8 @@ public class OrdineMissioneResource {
 
     @Autowired
     private OrdineMissioneService ordineMissioneService;
+    @Autowired(required = false)
+    private GEO geo;
 
     /**
      * GET  /rest/ordineMissione -> get Ordini di missione per l'utente
@@ -474,5 +475,20 @@ public class OrdineMissioneResource {
         }
     }
 
+    @RequestMapping(value = "rest/lista-comuni/{term}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<String>> listaComuni(@PathVariable String term) {
+        return Optional.ofNullable(geo)
+                .map(geo1 -> {
+                    return new ResponseEntity<>(geo.get(term)
+                            .getResults()
+                            .stream()
+                            .map(ComuniDTO::getText)
+                            .collect(Collectors.toList()), HttpStatus.OK);
+                })
+                .orElseGet(() -> new ResponseEntity<>(Collections.emptyList(), HttpStatus.OK));
 
+    }
 }

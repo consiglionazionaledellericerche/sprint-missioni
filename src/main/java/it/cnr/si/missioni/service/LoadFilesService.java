@@ -206,7 +206,7 @@ public class LoadFilesService {
 
     private String getFileNameFromUsersSpecial() {
         if (env.acceptsProfiles(Costanti.SPRING_PROFILE_DEVELOPMENT)) {
-            return "usersSpecialForUoDev.json";
+            return "usersSpecialForUo.json";
         } else {
             return "usersSpecialForUo.json";
         }

@@ -169,8 +169,9 @@
               </div>
                 <p class="col-md-7">
                         <span class="input-group">
-                          <span class="input-group-addon" translate="missione.form.destinazione-obbligatoria">Tipo Missione</span>
-                            <input ng-disabled="validazione || disabilitaOrdineMissione" type="text" class="input-sm form-control" name="destinazione" placeholder="{{'missione.form.destinazione.placeholder' | translate}}" ng-model="ordineMissioneModel.destinazione"/>
+                          <span class="input-group-addon" translate="missione.form.destinazione-obbligatoria">Destinazione</span>
+                            <input ng-show="missioneEstera" ng-disabled="validazione || disabilitaOrdineMissione" type="text" class="input-sm form-control" name="destinazione" placeholder="{{'missione.form.destinazione.placeholder' | translate}}" ng-model="ordineMissioneModel.destinazione"/>
+                            <input ng-hide="missioneEstera" typeahead-loading="loadingLocations" typeahead="suggestion for suggestion in cities($viewValue)" ng-disabled="validazione || disabilitaOrdineMissione" type="text" class="input-sm form-control" name="destinazione" placeholder="{{'missione.form.destinazione.placeholder' | translate}}" ng-model="ordineMissioneModel.destinazione" />
                         </span>
               </p>
             </form>

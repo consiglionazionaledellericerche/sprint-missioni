@@ -67,7 +67,16 @@ missioniApp.controller('OrdineMissioneController', function ($rootScope, $scope,
             return true;
         }
     }
-    
+
+    $scope.cities = function(cityName) {
+        if (cityName.length > 2) {
+            return $http.get("/api/rest/lista-comuni/"+cityName).then(function(response){
+                return response.data;
+            });
+        }
+        return [];
+    };
+
     var controlliPrimaDelSalvataggio = function(){
         if ($scope.impegnoSelected){
             if ($scope.uoSpesaSelected.cd_unita_organizzativa) {

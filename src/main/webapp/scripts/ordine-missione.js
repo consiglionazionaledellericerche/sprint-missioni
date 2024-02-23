@@ -69,12 +69,9 @@ missioniApp.controller('OrdineMissioneController', function ($rootScope, $scope,
     }
 
     $scope.cities = function(cityName) {
-        if (cityName.length > 2) {
-            return $http.get("/api/rest/lista-comuni/"+cityName).then(function(response){
-                return response.data;
-            });
-        }
-        return [];
+        return $http.get("/api/rest/lista-comuni/"+cityName).then(function(response){
+            return response.data;
+        });
     };
 
     var controlliPrimaDelSalvataggio = function(){

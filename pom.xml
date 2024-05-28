@@ -33,7 +33,7 @@
         <connection>scm:git:ssh://git@git.si.cnr.it/dev/sprint-missioni.git</connection>
         <developerConnection>scm:git:ssh://git@git.si.cnr.it/dev/sprint-missioni.git</developerConnection>
         <tag>3.1.124</tag>
-    </scm>
+    </scm>   
     <properties>
         <ace.version>4.2.5</ace.version>
         <assertj-core.version>3.5.2</assertj-core.version>

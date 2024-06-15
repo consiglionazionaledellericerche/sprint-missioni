@@ -74,8 +74,8 @@ public class PrintService {
             headers.add("Authorization", "");
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
             String body = createJsonForPrint(params);
-            log.info("Body: " + body);
-            log.info("Headers: " + headers);
+            log.debug("Body: " + body);
+            log.debug("Headers: " + headers);
             HttpEntity<String> requestEntity = new HttpEntity<String>(body, headers);
             RestTemplate rest = new RestTemplate(new SimpleClientHttpRequestWithGetBodyFactory());
             rest.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -94,8 +94,8 @@ public class PrintService {
             ResponseEntity<byte[]> response = processForPrint(HttpMethod.POST, params);
             log.debug("Stampa {} length: {}", printNameJasper, response.getHeaders().get("Content-Length").get(0));
             return response.getBody();
-
         } catch (Exception e) {
+            log.error("Error in JASPER", e);
             throw new ComponentException("Error in JASPER (" + e + ").", e);
         }
     }

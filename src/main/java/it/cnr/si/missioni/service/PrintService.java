@@ -90,8 +90,9 @@ public class PrintService {
     public byte[] print(String myJson, String printNameJasper, Serializable id) throws AwesomeException, ComponentException {
         try {
             Params params = createParamsForPrint(myJson, printNameJasper, id);
+            log.debug("Stampa {} width json: {}", printNameJasper, myJson);
             ResponseEntity<byte[]> response = processForPrint(HttpMethod.POST, params);
-            log.debug("Stampa " + printNameJasper + " length: " + response.getHeaders().get("Content-Length").get(0));
+            log.debug("Stampa {} length: {}", printNameJasper, response.getHeaders().get("Content-Length").get(0));
             return response.getBody();
 
         } catch (Exception e) {
